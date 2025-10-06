@@ -93,8 +93,28 @@ jobs:
 
 ### ¿Cómo se activa?
 1. Sube (`git push`) los cambios a `main` o abre un **Pull Request**.
-2. Ve a `Actions` en GitHub y selecciona el workflow `CI`.
-3. Observa la corrida: vas a ver los pasos y sus logs en tiempo real.
+2. En GitHub, entra al repositorio y haz clic en `Actions`.
+3. Verás el workflow `CI` listado. Al hacer push o abrir un PR, se ejecutará automáticamente.
+4. Ingresa a la corrida para ver los pasos, tiempos y logs. Si un paso falla, GitHub marcará el job en rojo y mostrará el error.
+5. En la pestaña `Artifacts` (al final de la corrida), descarga `dist` para revisar el build.
+
+### Pasos detallados en la interfaz de GitHub Actions
+1. Habilitar Actions (si el repositorio es nuevo):
+   - Ve a `Actions` → si aparece un aviso “Workflows aren’t being run…”, pulsa `I understand my workflows, go ahead and enable them`.
+2. Forzar una ejecución manual (opcional):
+   - Realiza un cambio mínimo (por ejemplo, en `README.md`), `git add .`, `git commit`, `git push` para disparar el workflow.
+3. Revisar una corrida:
+   - `Actions` → selecciona la corrida más reciente → entra al job `Build & Test`.
+   - Expande cada paso para ver logs. Busca mensajes de error en rojo si falla.
+4. Descargar artefactos:
+   - En la vista de la corrida, al final verás `Artifacts` → descarga `dist`.
+5. Agregar badge de estado al README (opcional):
+   - En `Actions` → `CI` → botón `…` → `Create status badge` → copia el markdown y pégalo en `README.md`.
+6. Proteger la rama `main` (recomendado):
+   - `Settings` → `Branches` → `Add branch protection rule`.
+   - `Branch name pattern`: `main`.
+   - Marca `Require status checks to pass before merging` y selecciona `CI / Build & Test`.
+   - Guarda. Así evitarás merges si la CI falla.
 
 ### Personalizaciones útiles
 - **Node**: cambia la matriz a otra versión, por ejemplo `18.x` o `22.x`:
