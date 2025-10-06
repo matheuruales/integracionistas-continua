@@ -1,4 +1,4 @@
-## Guía paso a paso: Configurar CI con GitHub Actions
+## Configurar CI con GitHub Actions
 
 Esta guía te explica, de forma simple, cómo dejar un flujo de Integración Continua (CI) funcionando en este repositorio para: instalar dependencias, validar tipos, lint, ejecutar tests y construir el proyecto.
 
@@ -19,6 +19,40 @@ Esta guía te explica, de forma simple, cómo dejar un flujo de Integración Con
 @Props/
   Guia-Workflow-GitHub-Actions.md  # Este documento
 ```
+
+### Estructura del proyecto y ubicaciones de ajustes
+Referencia de carpetas y archivos relevantes en este repo, con los puntos donde aplicamos cambios:
+
+```
+.
+├─ .github/
+│  └─ workflows/
+│     ├─ ci.yml                 # [Nuevo] CI principal (Jest)
+│     └─ ci-vitest.yml          # [Opcional/Nuevo] CI manual para Vitest
+│
+├─ @Props/
+│  ├─ Guia-Workflow-GitHub-Actions.md         # [Nuevo] Esta guía (Jest)
+│  └─ Guia-Workflow-GitHub-Actions-Vitest.md  # [Nuevo] Guía alternativa (Vitest)
+│
+├─ src/
+│  ├─ setupTests.ts             # Setup de tests (usado por Jest)
+│  ├─ components/               # Componentes React y sus tests
+│  ├─ views/                    # Vistas React
+│  └─ ...
+│
+├─ eslint.config.js             # [Nuevo] ESLint v9 flat config (overrides DOM/Jest/Node)
+├─ jest.config.js               # Config de Jest en ESM (mapeos, jsdom, ts-jest)
+├─ postcss.config.cjs           # Config CommonJS (marcada como CJS en ESLint)
+├─ package.json                 # Scripts: type-check, lint, test, build
+└─ ...
+```
+
+AJUSTES REALIZADOS:
+- `.github/workflows/ci.yml`: agregado workflow de CI (instala, type-check, lint, test, build, artefacto).
+- `eslint.config.js`: agregado y configurado para ESLint 9 (globals DOM/Jest, override CJS para `postcss.config.cjs`, ESM para configs `.js`).
+- `@Props/Guia-Workflow-GitHub-Actions.md`: creada y ampliada con checklist, tabla de pasos y bitácora de incidencias.
+- `.github/workflows/ci-vitest.yml`: agregado workflow manual alternativo para proyectos con Vitest.
+- `@Props/Guia-Workflow-GitHub-Actions-Vitest.md`: creada guía paralela para quienes usan Vitest (globals `vi`, jsdom, etc.).
 
 ### Archivo del workflow (ci.yml)
 Copiar/pegar si lo necesitas, aunque ya está creado por esta guía en el repositorio:
@@ -82,21 +116,34 @@ jobs:
 ```
 
 ### ¿Qué hace cada paso?
-- **Checkout**: descarga el código del repo para que el runner lo use.
-- **Setup Node**: selecciona la versión de Node y habilita caché de npm (más rápido).
-- **npm ci**: instala dependencias usando `package-lock.json` para builds reproducibles.
-- **Type check**: ejecuta `tsc --noEmit` (detecta errores de tipos).
-- **Lint**: corre ESLint y falla el build si hay errores.
-- **Tests**: ejecuta Jest en modo CI. Este repo ya tiene `jest` configurado.
-- **Build**: ejecuta `vite build` y genera `dist/`.
-- **Upload artifact**: adjunta `dist/` a la corrida, útil para descargar y probar.
 
-### ¿Cómo se activa?
-1. Sube (`git push`) los cambios a `main` o abre un **Pull Request**.
-2. En GitHub, entra al repositorio y haz clic en `Actions`.
-3. Verás el workflow `CI` listado. Al hacer push o abrir un PR, se ejecutará automáticamente.
-4. Ingresa a la corrida para ver los pasos, tiempos y logs. Si un paso falla, GitHub marcará el job en rojo y mostrará el error.
-5. En la pestaña `Artifacts` (al final de la corrida), descarga `dist` para revisar el build.
+| Paso | ¿Qué hace? | Script/Comando | Herramienta |
+|---|---|---|---|
+| Instalar dependencias | Instala usando el `package-lock.json` para garantizar builds reproducibles | `npm ci` | npm |
+| Validar tipos | Verifica tipos sin emitir archivos (detecta errores de TypeScript) | `npm run type-check` (`tsc --noEmit`) | TypeScript |
+| Lint | Analiza el código y falla si hay errores de estilo/reglas | `npm run lint` (ESLint v9 flat config) | ESLint |
+| Ejecutar tests | Ejecuta las pruebas en modo CI | `npm test -- --ci` | Jest |
+| Construir el proyecto | Compila a producción y genera la carpeta `dist/` | `npm run build` (`vite build`) | Vite |
+
+Notas:
+- Antes de estos pasos, el runner hace: `Checkout` (descarga el repo) y `Setup Node` (define versión de Node y cachea npm).
+- Después del build, se sube `dist/` como artefacto para descargarlo desde la corrida.
+
+### Paso a paso (checklist)
+1) Confirmar archivos y scripts
+   - Verifica que existan:
+     - `.github/workflows/ci.yml`
+     - `eslint.config.js`
+   - En `package.json` deben existir scripts: `type-check`, `lint`, `test`, `build`.
+
+2) Activar y ejecutar el workflow
+   - Haz `git push` a `main` o abre un PR.
+   - En GitHub → `Actions` → verás el workflow `CI` ejecutándose.
+   - Entra a la corrida para revisar los pasos y sus logs.
+   - Para reintentar: `Actions` → selecciona la corrida → `Re-run jobs`.
+
+3) Revisar artefacto de build
+   - En la página de la corrida, al final busca `Artifacts` y descarga `dist`.
 
 ### Pasos detallados en la interfaz de GitHub Actions
 1. Habilitar Actions (si el repositorio es nuevo):
@@ -141,8 +188,8 @@ jobs:
 
 Con esto, tu CI queda listo: cada cambio validará automáticamente la calidad y el build del proyecto.
 
-### Bitácora de incidencias (para estudiantes)
-Registro de problemas encontrados y su solución, para que puedas replicar los pasos:
+### Si falla… (bitácora de incidencias)
+Usa esta sección como guía rápida. Busca el mensaje que te sale y aplica la solución.
 
 1) ESLint 9 no encuentra configuración
 - Mensaje: `ESLint couldn't find an eslint.config.(js|mjs|cjs) file.`
@@ -166,6 +213,13 @@ Registro de problemas encontrados y su solución, para que puedas replicar los p
 - Resultado esperado: el paso `Lint` reconoce los entornos correctos y solo reporta problemas reales de estilo.
 
 3) Parsing error en configs: `'import' and 'export' may appear only with sourceType: module`
+- Resultado esperado: desaparece el parsing error en esos archivos.
+
+4) ¿Sigue fallando el lint por reglas de estilo?
+- Ejecuta localmente:
+  - `npm run lint` para ver los errores exactos
+  - `npm run format` para autoformatear
+- Si el error es válido (no falso positivo), corrige el código. Si es un falso positivo, evalúa ajustar reglas puntualmente en `eslint.config.js`.
 - Causa: ESLint interpretaba `eslint.config.js` y `jest.config.js` como CommonJS.
 - Solución aplicada:
   1. En `eslint.config.js`, separar overrides:

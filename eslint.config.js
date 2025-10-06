@@ -63,6 +63,7 @@ export default [
         beforeEach: "readonly",
         afterEach: "readonly",
         jest: "readonly",
+        vi: "readonly",
         window: "readonly",
         document: "readonly",
       },
