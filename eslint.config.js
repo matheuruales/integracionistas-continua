@@ -72,14 +72,9 @@ export default [
     },
   },
 
-  // Overrides para archivos de configuración Node/CommonJS
+  // Overrides para archivos de configuración CommonJS específicos
   {
-    files: [
-      "*.config.*",
-      "jest.config.js",
-      "postcss.config.cjs",
-      "tailwind.config.ts",
-    ],
+    files: ["postcss.config.cjs"],
     languageOptions: {
       sourceType: "commonjs",
       globals: {
@@ -89,6 +84,14 @@ export default [
         process: "readonly",
         exports: "readonly",
       },
+    },
+  },
+
+  // Overrides para configs ESM
+  {
+    files: ["eslint.config.js", "jest.config.js"],
+    languageOptions: {
+      sourceType: "module",
     },
   },
 ];

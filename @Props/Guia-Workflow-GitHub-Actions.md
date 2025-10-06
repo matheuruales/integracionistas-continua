@@ -165,3 +165,12 @@ Registro de problemas encontrados y su solución, para que puedas replicar los p
   2. Reintentar el workflow: `Actions` → corrida → `Re-run jobs`.
 - Resultado esperado: el paso `Lint` reconoce los entornos correctos y solo reporta problemas reales de estilo.
 
+3) Parsing error en configs: `'import' and 'export' may appear only with sourceType: module`
+- Causa: ESLint interpretaba `eslint.config.js` y `jest.config.js` como CommonJS.
+- Solución aplicada:
+  1. En `eslint.config.js`, separar overrides:
+     - `postcss.config.cjs` → `sourceType: commonjs` y globals Node.
+     - `eslint.config.js` y `jest.config.js` → `sourceType: module`.
+  2. Reintentar el workflow en `Actions` → `Re-run jobs`.
+- Resultado esperado: desaparece el parsing error en esos archivos.
+
