@@ -141,3 +141,15 @@ jobs:
 
 Con esto, tu CI queda listo: cada cambio validará automáticamente la calidad y el build del proyecto.
 
+### Bitácora de incidencias (para estudiantes)
+Registro de problemas encontrados y su solución, para que puedas replicar los pasos:
+
+1) ESLint 9 no encuentra configuración
+- Mensaje: `ESLint couldn't find an eslint.config.(js|mjs|cjs) file.`
+- Causa: A partir de ESLint v9, se usa configuración flat `eslint.config.js`.
+- Solución aplicada:
+  1. Crear `eslint.config.js` en la raíz del repo con configuración flat para JS/TS.
+  2. Corregir sintaxis en la clave `files` (coma en lugar de punto y coma).
+  3. Reintentar el workflow en GitHub: `Actions` → seleccionar corrida fallida → `Re-run jobs`.
+- Resultado esperado: el paso `Lint` deja de fallar por falta de config. Si fallan reglas, ajustar el código o reglas.
+
