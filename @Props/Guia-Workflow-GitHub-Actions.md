@@ -168,11 +168,34 @@ Notas:
   ```yaml
   strategy:
     matrix:
-      node-version: [20.x, 22.x]
+      node-version: [18.x, 20.x, 22.x]
   ```
 - **Ramas**: ajusta los disparadores (`on`) para otras ramas o solo PRs.
 - **Caché**: ya está activado para npm vía `actions/setup-node@v4`.
 - **Artefacto**: si no quieres subir `dist/`, elimina el paso de `upload-artifact`.
+
+### Compatibilidad de Node (para estudiantes)
+Si tu máquina tiene una versión diferente de Node a la usada en CI (20.x por defecto), puedes:
+
+- Actualizar tu Node local a la recomendada (ej. 20.x). Con `nvm`:
+  - Instala `nvm` y luego: `nvm install 20` y `nvm use 20`.
+- Usar `.nvmrc` para seleccionar la versión automáticamente: `nvm use`.
+- Ajustar la matriz del workflow para probar más versiones de Node:
+  ```yaml
+  strategy:
+    matrix:
+      node-version: [18.x, 20.x, 22.x]
+  ```
+- Añadir en `package.json` el campo `engines` para comunicar la versión mínima:
+  ```json
+  {
+    "engines": {
+      "node": ">=18.18.0"
+    }
+  }
+  ```
+
+Recomendación: mantener local y CI en la misma versión (por ejemplo, 20.x) para evitar diferencias de comportamiento.
 
 ### Problemas frecuentes y soluciones
 - **Fallan los tests sin tests presentes**: este repo usa `"jest --passWithNoTests"` en `npm test`, así no falla si no hay specs.
