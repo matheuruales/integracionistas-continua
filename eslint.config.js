@@ -29,9 +29,66 @@ export default [
         ecmaFeatures: { jsx: true },
         project: false,
       },
+      // Globals de entorno navegador/DOM para evitar falsos positivos de no-undef
+      globals: {
+        window: "readonly",
+        document: "readonly",
+        localStorage: "readonly",
+        console: "readonly",
+        CustomEvent: "readonly",
+        requestAnimationFrame: "readonly",
+        ResizeObserver: "readonly",
+        HTMLInputElement: "readonly",
+        HTMLDivElement: "readonly",
+        SpeechSynthesisVoice: "readonly",
+        SpeechSynthesisUtterance: "readonly",
+        React: "readonly",
+      },
     },
     rules: {
-      // Puedes añadir reglas específicas para TS aquí si las necesitas
+      // En TS, delegar indefinidos al chequeo de tipos de TypeScript
+      "no-undef": "off",
+    },
+  },
+
+  // Overrides para archivos de test y setup: habilitar globals de Jest
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx", "src/setupTests.ts"],
+    languageOptions: {
+      globals: {
+        describe: "readonly",
+        test: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        jest: "readonly",
+        window: "readonly",
+        document: "readonly",
+      },
+    },
+    rules: {
+      "no-undef": "off",
+    },
+  },
+
+  // Overrides para archivos de configuración Node/CommonJS
+  {
+    files: [
+      "*.config.*",
+      "jest.config.js",
+      "postcss.config.cjs",
+      "tailwind.config.ts",
+    ],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: {
+        require: "readonly",
+        module: "readonly",
+        __dirname: "readonly",
+        process: "readonly",
+        exports: "readonly",
+      },
     },
   },
 ];

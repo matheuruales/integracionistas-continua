@@ -153,3 +153,15 @@ Registro de problemas encontrados y su solución, para que puedas replicar los p
   3. Reintentar el workflow en GitHub: `Actions` → seleccionar corrida fallida → `Re-run jobs`.
 - Resultado esperado: el paso `Lint` deja de fallar por falta de config. Si fallan reglas, ajustar el código o reglas.
 
+2) Lint falla con `no-undef` en tests, DOM o archivos de config
+- Mensajes típicos: `'test' is not defined`, `'document' is not defined`, `'module' is not defined`.
+- Causa: faltan globals/entornos (Jest, DOM, Node) en la configuración de ESLint.
+- Solución aplicada:
+  1. Actualizar `eslint.config.js`:
+     - Añadir globals de navegador/DOM para TS/TSX.
+     - Desactivar `no-undef` en TS y en tests.
+     - Crear overrides para `*.test.ts(x)` y `src/setupTests.ts` con globals de Jest.
+     - Crear override para archivos de configuración (`postcss.config.cjs`, `jest.config.js`, `*.config.*`) con globals de Node/CommonJS.
+  2. Reintentar el workflow: `Actions` → corrida → `Re-run jobs`.
+- Resultado esperado: el paso `Lint` reconoce los entornos correctos y solo reporta problemas reales de estilo.
+
