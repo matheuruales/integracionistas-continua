@@ -173,6 +173,14 @@ Notas:
 - **Ramas**: ajusta los disparadores (`on`) para otras ramas o solo PRs.
 - **Caché**: ya está activado para npm vía `actions/setup-node@v4`.
 - **Artefacto**: si no quieres subir `dist/`, elimina el paso de `upload-artifact`.
+  - Si usas matriz de Node, usa nombres únicos por versión para evitar conflicto 409:
+    ```yaml
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-node-${{ matrix.node-version }}
+        path: dist
+    ```
 
 ### Compatibilidad de Node (para estudiantes)
 Si tu máquina tiene una versión diferente de Node a la usada en CI (20.x por defecto), puedes:
@@ -237,6 +245,14 @@ Usa esta sección como guía rápida. Busca el mensaje que te sale y aplica la s
 
 3) Parsing error en configs: `'import' and 'export' may appear only with sourceType: module`
 - Resultado esperado: desaparece el parsing error en esos archivos.
+
+4) Conflicto al subir artefacto: `(409) Conflict: an artifact with this name already exists`
+- Causa: en matrices, varios jobs intentan subir un artefacto con el mismo nombre.
+- Solución: cambiar el nombre del artefacto para incluir la versión de Node.
+  ```yaml
+  name: dist-node-${{ matrix.node-version }}
+  ```
+- Resultado esperado: cada job sube su artefacto sin colisiones.
 
 4) ¿Sigue fallando el lint por reglas de estilo?
 - Ejecuta localmente:
