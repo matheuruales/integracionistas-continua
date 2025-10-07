@@ -145,6 +145,34 @@ Notas:
 3) Revisar artefacto de build
    - En la página de la corrida, al final busca `Artifacts` y descarga `dist`.
 
+### Después de clonar: cómo apuntar a TU repositorio
+Para que tus cambios y tests se ejecuten en tu repo (no en el del docente):
+
+1. Cambia el remoto `origin` a tu repositorio
+   ```bash
+   git remote -v
+   git remote remove origin
+   git remote add origin https://github.com/<tu-usuario>/<tu-repo>.git
+   git branch -M main
+   git push -u origin main
+   ```
+2. Habilita GitHub Actions
+   - Entra a la pestaña `Actions` de TU repo y habilita workflows si aparece el aviso.
+   - Haz un commit/push para disparar el workflow.
+3. Ajusta la rama por defecto si no usas `main`
+   - Edita `.github/workflows/ci.yml` (y `ci-vitest.yml` si aplica):
+     ```yaml
+     on:
+       push:
+         branches: [tu-rama]
+       pull_request:
+         branches: [tu-rama]
+     ```
+4. Badge de estado (opcional)
+   - `Actions` → `CI` → `…` → `Create status badge` y pega el markdown en TU `README.md`.
+5. Nota sobre tests
+   - Los tests no dependen del remoto. Al apuntar `origin` a tu repo y habilitar Actions, se ejecutarán en tu repositorio al hacer push o abrir PR.
+
 ### Pasos detallados en la interfaz de GitHub Actions
 1. Habilitar Actions (si el repositorio es nuevo):
    - Ve a `Actions` → si aparece un aviso “Workflows aren’t being run…”, pulsa `I understand my workflows, go ahead and enable them`.

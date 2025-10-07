@@ -14,8 +14,8 @@ if (typeof global.TextDecoder === "undefined") {
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: (query: string) => ({ // <-- Aquí se agrega ': string'
-    matches: false, // Puedes cambiar a 'true' para simular el modo oscuro en tus tests.
+  value: (query: string) => ({ 
+    matches: false,
     media: query,
     onchange: null,
     addListener: jest.fn(),
