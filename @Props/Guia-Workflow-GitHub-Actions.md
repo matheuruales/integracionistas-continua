@@ -282,6 +282,18 @@ Usa esta sección como guía rápida. Busca el mensaje que te sale y aplica la s
   ```
 - Resultado esperado: cada job sube su artefacto sin colisiones.
 
+### ¿Por qué mi cambio llegó a `main` si falló la CI?
+- La CI valida después del push. Si haces push directo a `main`, el código ya quedó en `main` y la CI solo reporta el fallo a posteriori.
+- Para impedirlo:
+  1. Usa PRs hacia `main` en lugar de push directo.
+  2. Protege la rama `main`:
+     - `Settings` → `Branches` → `Add branch protection rule` → `main`.
+     - Activa “Require status checks to pass before merging” y selecciona los checks de CI (todas las variantes de Node).
+     - Opcional: “Require pull request reviews before merging”.
+  3. (Opcional) Hooks locales con Husky:
+     - Pre-push: ejecutar `npm run lint && npm test` para evitar subir cambios rotos.
+
+
 4) ¿Sigue fallando el lint por reglas de estilo?
 - Ejecuta localmente:
   - `npm run lint` para ver los errores exactos
