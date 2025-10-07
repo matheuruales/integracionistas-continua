@@ -49,6 +49,7 @@ Referencia de carpetas y archivos relevantes en este repo, con los puntos donde 
 
 AJUSTES REALIZADOS:
 - `.github/workflows/ci.yml`: agregado workflow de CI (instala, type-check, lint, test, build, artefacto).
+- `.github/workflows/ci.yml`: añadido job `CodeQL Analysis` para JS/TS (seguridad de código).
 - `eslint.config.js`: agregado y configurado para ESLint 9 (globals DOM/Jest, override CJS para `postcss.config.cjs`, ESM para configs `.js`).
 - `@Props/Guia-Workflow-GitHub-Actions.md`: creada y ampliada con checklist, tabla de pasos y bitácora de incidencias.
 - `.github/workflows/ci-vitest.yml`: agregado workflow manual alternativo para proyectos con Vitest.
