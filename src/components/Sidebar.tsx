@@ -198,6 +198,6 @@ export default function Sidebar() {
 
 
 function useLocation() {
-  // En una aplicación real, esto vendría de react-router-dom
+
   return { pathname: window.location.pathname };
 }
