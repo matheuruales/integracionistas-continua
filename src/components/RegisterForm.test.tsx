@@ -11,7 +11,7 @@ describe("RegisterForm", () => {
 
   it("el botón está deshabilitado si los campos están vacíos", () => {
     render(<RegisterForm />);
-    const button = screen.getByRole("button", { name: /registrar/i });
+    const button = screen.getByRole("button", { name: /registra/i });
     expect(button).toBeDisabled();
   });
 

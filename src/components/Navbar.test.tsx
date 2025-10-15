@@ -1,22 +1,30 @@
-// src/components/Navbar.test.tsx
-import { render, screen} from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import Navbar from "./Navbar";
 
-// Limpia los mocks antes de cada prueba
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+function RenderNavbarWithRouter() {
+  return (
+    <MemoryRouter>
+      <Navbar />
+    </MemoryRouter>
+  );
+}
 
-// --- Pruebas de renderizado ---
 describe("Navbar - Renderizado", () => {
-  test("renderiza el título principal 'UCC : Prácticas Desarrollo'", () => {
-    render(<Navbar />);
-    expect(screen.getByText(/UCC : Prácticas Desarrollo/i)).toBeInTheDocument();
-  });
+  it("renderiza enlaces principales", () => {
+    render(<RenderNavbarWithRouter />);
 
-  test("renderiza el botón con el texto 'Tema'", () => {
-    render(<Navbar />);
-    expect(screen.getByRole("button", { name: /Tema/i })).toBeInTheDocument();
+    const linkRandom = screen.getByRole("link", { name: /generador aleatorio/i });
+    const linkCart = screen.getByRole("link", { name: /carrito/i });
+    const linkSurvey = screen.getByRole("link", { name: /encuesta/i });
+
+    expect(linkRandom).toBeInTheDocument();
+    expect(linkCart).toBeInTheDocument();
+    expect(linkSurvey).toBeInTheDocument();
+
+
+    expect(linkRandom).toHaveAttribute("href", "/random");
+    expect(linkCart).toHaveAttribute("href", "/cart");
+    expect(linkSurvey).toHaveAttribute("href", "/survey");
   });
 });
-

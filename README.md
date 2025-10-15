@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Este proyecto es un aplicativo desarrollado en **React con Vite** para aprender y aplicar **pruebas unitarias** con Jest más la integración continua con GitHub Actions.
+Este proyecto es un aplicativo desarrollado en **React con Vite** para aprender y aplicar **pruebas unitarias** con Jest.
 
 El aplicativo incluye:
 
