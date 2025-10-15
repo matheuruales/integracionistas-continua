@@ -14,7 +14,7 @@ describe("Navbar - Renderizado", () => {
   it("renderiza enlaces principales", () => {
     render(<RenderNavbarWithRouter />);
 
-
+    const linkRandom = screen.getByRole("link", { name: /generador aleatorio/i });
     const linkCart = screen.getByRole("link", { name: /carrito/i });
     const linkSurvey = screen.getByRole("link", { name: /encuesta/i });
 
