@@ -1,29 +1,26 @@
-name: CI_CALIDAD_SOFTWARE
-# 🚀 Integración Continua para validar calidad y build del proyecto
+name: CI (Jest)
+# 🚀 Integración Continua con Jest + TypeScript + Vite + ESLint
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  # 🔁 Ejecuta en pushes a main y en PRs hacia main
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
-  # 🧠 Evita ejecuciones duplicadas en la misma rama
+  # Evita ejecuciones duplicadas
 
 jobs:
   build-and-test:
     name: 🔨 Build & 🧪 Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    env:
-      CI: true
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+    env:
+      CI: true
 
     steps:
       - name: 📥 Checkout repository
@@ -34,11 +31,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-          # 💾 Cache de dependencias para acelerar ejecuciones
+          cache-dependency-path: package-lock.json
 
       - name: 📦 Install dependencies (npm ci)
         run: npm ci
-        # Usa package-lock para instalaciones reproducibles
 
       - name: 🧠 Type check (TS)
         run: npm run type-check
@@ -47,7 +43,7 @@ jobs:
         run: npm run lint
 
       - name: 🧪 Run tests (Jest)
-        run: npm test -- --ci
+        run: npm run test -- --ci
 
       - name: 🏗️ Build (Vite)
         run: npm run build
@@ -58,4 +54,3 @@ jobs:
         with:
           name: dist-node-${{ matrix.node-version }}
           path: dist
-

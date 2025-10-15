@@ -1,9 +1,18 @@
 name: CI (Vitest)
-# 🧪 Variante de CI para proyectos que usan Vitest en lugar de Jest
+# 🧪 Integración Continua con Vitest + TypeScript + Vite + ESLint
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch: {}
-  # ▶️ Se ejecuta manualmente desde la pestaña Actions (Run workflow)
+  # Se ejecuta en pushes, PRs y manualmente
+
+concurrency:
+  group: ci-vitest-${{ github.ref }}
+  cancel-in-progress: true
+  # Evita duplicaciones en la misma rama
 
 jobs:
   build-and-test-vitest:
@@ -13,6 +22,7 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
     env:
       CI: true
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
@@ -22,7 +32,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-          # 💾 Cache de dependencias
+          cache-dependency-path: package-lock.json
 
       - name: 📦 Install dependencies (npm ci)
         run: npm ci
@@ -34,7 +44,7 @@ jobs:
         run: npm run lint
 
       - name: 🧪 Run tests (Vitest)
-        run: npm test -- --run
+        run: npm run test -- --run
 
       - name: 🏗️ Build (Vite)
         run: npm run build
@@ -45,4 +55,3 @@ jobs:
         with:
           name: dist-node-${{ matrix.node-version }}
           path: dist
-
