@@ -196,7 +196,7 @@ export default function Sidebar() {
   );
 }
 
-// Hook helper para obtener la ruta actual
+
 function useLocation() {
   // En una aplicación real, esto vendría de react-router-dom
   return { pathname: window.location.pathname };
