@@ -29,7 +29,7 @@ describe("ShoppingCart", () => {
   it("suma correctamente con múltiples ítems", () => {
     render(<ShoppingCart />);
 
-
+    const addButtons = screen.getAllByRole("button");
     // 2 Manzanas ($2 c/u) + 1 Banano ($3) = $7
     fireEvent.click(addButtons[0]);
     fireEvent.click(addButtons[0]);
